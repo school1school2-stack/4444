@@ -144,7 +144,7 @@
 <body>
 
 <div class="dashboard">
-    <!-- قائمة النماذج المنسدلة بتدرج تسلسلي (Zebra Striping) -->
+    <!-- قائمة النماذج المنسدلة بتصميم أبيض ثم بيج بحواف حمراء خفيفة -->
     <div class="model-nav no-print" id="nav-bar">
         <div class="model-select-wrapper">
             <label for="model-dropdown">📁 اختر النموذج:</label>
@@ -152,7 +152,7 @@
                 <option value="all">🌍 عرض الكل</option>
             </select>
         </div>
-        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ أ / عبدالعزيز الفيفي - ثانوية الأمير عبدالمجيد  </div>
+        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ نمط متناوب (أبيض / بيج بإطار أحمر خفيف)</div>
     </div>
 
     <div class="header">
@@ -718,13 +718,17 @@
         const foundModels = new Set();
         snapshot.forEach(doc => foundModels.add(doc.data().model_id?.toString() || "الجملة الاسمية"));
         
-        let optionsHtml = `<option value="all" style="background-color: #f1f5f9; color: #0284c7; font-weight: bold;">🌍 عرض الكل</option>`;
+        let optionsHtml = `<option value="all" style="background-color: #ffffff; color: #0284c7; font-weight: bold;">🌍 عرض الكل</option>`;
         
         let sortedModels = Array.from(foundModels).sort();
         sortedModels.forEach((mId, index) => {
-            // تلوين تسلسلي: سطر أبيض وسطر رمادي خفيف جداً
-            let bgColor = (index % 2 === 0) ? '#ffffff' : '#f8fafc';
-            optionsHtml += `<option value="${mId}" style="background-color: ${bgColor}; color: #1e293b;">📂 نموذج: ${mId}</option>`;
+            // سطر أبيض، وسطر بيج بخطوط حواف حمراء خفيفة (تنسيق تسلسلي)
+            let bgColor = (index % 2 === 0) ? '#ffffff' : '#fdf6e2'; 
+            let customStyle = (index % 2 === 0) 
+                ? `background-color: #ffffff; color: #1e293b; font-weight: bold;` 
+                : `background-color: #fdf6e2; color: #991b1b; font-weight: bold; border-bottom: 1px dashed #f87171; border-top: 1px dashed #f87171;`;
+            
+            optionsHtml += `<option value="${mId}" style="${customStyle}">📂 نموذج: ${mId}</option>`;
         });
         
         dropdown.innerHTML = optionsHtml;
