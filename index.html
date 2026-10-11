@@ -42,11 +42,7 @@
         .model-dropdown:hover { border-color: var(--accent); box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 4px 10px rgba(2, 132, 199, 0.12); }
         .model-dropdown:focus { border-color: var(--accent); background: #ffffff; box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15), 0 4px 8px rgba(0,0,0,0.05); }
         
-        /* تلوين وتدرج خفيف جداً لخيارات القائمة المنسدلة لتعطي مظهراً جمالياً متميزاً */
-        .model-dropdown option { background-color: #ffffff; color: #1e293b; padding: 12px; font-weight: bold; }
-        .model-dropdown option:first-child { background: linear-gradient(90deg, #e0f2fe, #f0fdf4); color: #0369a1; font-weight: bold; }
-        .model-dropdown option:nth-child(even) { background-color: #fafaf9; }
-        .model-dropdown option:nth-child(odd) { background-color: #f8fafc; }
+        .model-dropdown option { padding: 10px; font-weight: bold; }
 
         .model-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; white-space: nowrap; }
         .model-btn.active { background: var(--accent); color: white; }
@@ -148,7 +144,7 @@
 <body>
 
 <div class="dashboard">
-    <!-- قائمة النماذج المنسدلة المحسنة جمالياً -->
+    <!-- قائمة النماذج المنسدلة بتدرج تسلسلي (Zebra Striping) -->
     <div class="model-nav no-print" id="nav-bar">
         <div class="model-select-wrapper">
             <label for="model-dropdown">📁 اختر النموذج:</label>
@@ -156,7 +152,7 @@
                 <option value="all">🌍 عرض الكل</option>
             </select>
         </div>
-        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ تصميم ثلاثي الأبعاد خفيف لتنقل سلس بين النماذج</div>
+        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ نمط تسلسلي متناوب (أبيض / رمادي خفيف) لسهولة التصفح</div>
     </div>
 
     <div class="header">
@@ -722,9 +718,13 @@
         const foundModels = new Set();
         snapshot.forEach(doc => foundModels.add(doc.data().model_id?.toString() || "الجملة الاسمية"));
         
-        let optionsHtml = `<option value="all">🌍 عرض الكل</option>`;
-        Array.from(foundModels).sort().forEach(mId => {
-            optionsHtml += `<option value="${mId}">📂 نموذج: ${mId}</option>`;
+        let optionsHtml = `<option value="all" style="background-color: #f1f5f9; color: #0284c7; font-weight: bold;">🌍 عرض الكل</option>`;
+        
+        let sortedModels = Array.from(foundModels).sort();
+        sortedModels.forEach((mId, index) => {
+            // تلوين تسلسلي: سطر أبيض وسطر رمادي خفيف جداً
+            let bgColor = (index % 2 === 0) ? '#ffffff' : '#f8fafc';
+            optionsHtml += `<option value="${mId}" style="background-color: ${bgColor}; color: #1e293b;">📂 نموذج: ${mId}</option>`;
         });
         
         dropdown.innerHTML = optionsHtml;
