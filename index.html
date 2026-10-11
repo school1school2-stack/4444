@@ -47,7 +47,7 @@
         }
         .custom-dropdown-btn:hover { border-color: var(--accent); }
         
-        /* القائمة المنبثقة المخصصة لتجاوز قيود الجوال */
+        /* القائمة المنبثقة مع إخفاء شريط التمرير نهائياً */
         .custom-dropdown-list {
             position: absolute;
             top: calc(100% + 5px);
@@ -61,7 +61,14 @@
             display: none;
             max-height: 250px;
             overflow-y: auto;
+            /* إخفاء شريط التمرير لمتصفحات فايرفوكس وستركت/كروم وابل */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
         }
+        .custom-dropdown-list::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        
         .custom-dropdown-list.show { display: block; }
         
         /* عناصر القائمة بتسلسل أبيض ثم بيج بحواف حمراء خفيفة */
@@ -174,7 +181,7 @@
 <body>
 
 <div class="dashboard">
-    <!-- قائمة النماذج المنسدلة المخصصة بالكامل (أبيض / بيج بحواف حمراء) -->
+    <!-- قائمة النماذج المخصصة بدون شريط تمرير ظاهر وبأناقة تامة -->
     <div class="model-nav no-print" id="nav-bar">
         <div class="model-select-wrapper">
             <label>📁 اختر النموذج:</label>
@@ -188,7 +195,7 @@
                 </div>
             </div>
         </div>
-        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ أ / عبدالعزيز الفيفي - ثانوية الأمير عبدالمجيد</div>
+        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ قائمة مخصصة ونظيفة بدون أشرطة تمرير</div>
     </div>
 
     <div class="header">
@@ -351,13 +358,11 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isViewOnly = urlParams.has('view');
 
-    // التحكم بفتح وإغلاق القائمة المخصصة
     function toggleCustomDropdown() {
         const list = document.getElementById('custom-dropdown-options');
         list.classList.toggle('show');
     }
 
-    // إغلاق القائمة عند النقر خارجها
     window.addEventListener('click', function(e) {
         if (!e.target.closest('.custom-dropdown-container')) {
             document.getElementById('custom-dropdown-options').classList.remove('show');
@@ -732,7 +737,6 @@
     function setMod(m) { 
         selectedModel = m; 
         
-        // تحديث النص المعروض في الزر المخصص
         const textSpan = document.getElementById('dropdown-selected-text');
         if (m === 'all') {
             textSpan.innerText = "🌍 عرض الكل";
@@ -777,7 +781,6 @@
         
         let sortedModels = Array.from(foundModels).sort();
         sortedModels.forEach((mId, index) => {
-            // سطر أبيض، وسطر بيج بحواف حمراء خفيفة تسلسلي
             let style = (index % 2 === 0) 
                 ? `background-color: #ffffff; color: #1e293b;` 
                 : `background-color: #fdf6e2; color: #991b1b; border-top: 1px dashed #f87171; border-bottom: 1px dashed #f87171;`;
