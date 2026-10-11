@@ -20,13 +20,15 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 20px; }
         .dashboard { max-width: 1400px; margin: auto; }
 
-        /* تعديل القائمة المنسدلة لتكون احترافية وبإيحاء ثلاثي الأبعاد خفيف وتدرجات ملونة */
-        .model-nav { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 25px; padding: 15px 20px; background: var(--card-bg); border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); flex-wrap: wrap; border-top: 3px solid var(--accent); }
-        .model-select-wrapper { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px; }
+        /* تنسيق حاوية قائمة النماذج المخصصة */
+        .model-nav { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 25px; padding: 15px 20px; background: var(--card-bg); border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); flex-wrap: wrap; border-top: 3px solid var(--accent); position: relative; }
+        .model-select-wrapper { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 300px; position: relative; }
         .model-select-wrapper label { font-weight: bold; color: var(--accent); white-space: nowrap; font-size: 1.05rem; }
         
-        .model-dropdown { 
-            flex: 1; 
+        /* القائمة المخصصة الكاملة */
+        .custom-dropdown-container { position: relative; flex: 1; }
+        .custom-dropdown-btn { 
+            width: 100%; 
             padding: 12px 18px; 
             border-radius: 12px; 
             border: 1px solid #cbd5e1; 
@@ -34,15 +36,43 @@
             font-size: 1rem; 
             font-weight: bold; 
             color: var(--text-main); 
-            outline: none; 
+            text-align: right; 
             cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
             box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 3px 6px rgba(0,0,0,0.04);
             transition: all 0.3s ease; 
+            box-sizing: border-box;
         }
-        .model-dropdown:hover { border-color: var(--accent); box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 4px 10px rgba(2, 132, 199, 0.12); }
-        .model-dropdown:focus { border-color: var(--accent); background: #ffffff; box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15), 0 4px 8px rgba(0,0,0,0.05); }
+        .custom-dropdown-btn:hover { border-color: var(--accent); }
         
-        .model-dropdown option { padding: 10px; font-weight: bold; }
+        /* القائمة المنبثقة المخصصة لتجاوز قيود الجوال */
+        .custom-dropdown-list {
+            position: absolute;
+            top: calc(100% + 5px);
+            right: 0;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 1px solid var(--border);
+            z-index: 9999;
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .custom-dropdown-list.show { display: block; }
+        
+        /* عناصر القائمة بتسلسل أبيض ثم بيج بحواف حمراء خفيفة */
+        .custom-dropdown-item {
+            padding: 12px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: right;
+        }
+        .custom-dropdown-item:hover { background-color: #e0f2fe !important; color: #0284c7; }
 
         .model-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; white-space: nowrap; }
         .model-btn.active { background: var(--accent); color: white; }
@@ -144,15 +174,21 @@
 <body>
 
 <div class="dashboard">
-    <!-- قائمة النماذج المنسدلة بتصميم أبيض ثم بيج بحواف حمراء خفيفة -->
+    <!-- قائمة النماذج المنسدلة المخصصة بالكامل (أبيض / بيج بحواف حمراء) -->
     <div class="model-nav no-print" id="nav-bar">
         <div class="model-select-wrapper">
-            <label for="model-dropdown">📁 اختر النموذج:</label>
-            <select id="model-dropdown" class="model-dropdown" onchange="setMod(this.value)">
-                <option value="all">🌍 عرض الكل</option>
-            </select>
+            <label>📁 اختر النموذج:</label>
+            <div class="custom-dropdown-container">
+                <div class="custom-dropdown-btn" id="dropdown-toggle-btn" onclick="toggleCustomDropdown()">
+                    <span id="dropdown-selected-text">🌍 عرض الكل</span>
+                    <span>▼</span>
+                </div>
+                <div class="custom-dropdown-list" id="custom-dropdown-options">
+                    <!-- سيتم تعبئتها ديناميكياً -->
+                </div>
+            </div>
         </div>
-        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ نمط متناوب (أبيض / بيج بإطار أحمر خفيف)</div>
+        <div style="font-size: 0.9rem; color: var(--text-sub);">✨ أ / عبدالعزيز الفيفي - ثانوية الأمير عبدالمجيد</div>
     </div>
 
     <div class="header">
@@ -314,6 +350,19 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const isViewOnly = urlParams.has('view');
+
+    // التحكم بفتح وإغلاق القائمة المخصصة
+    function toggleCustomDropdown() {
+        const list = document.getElementById('custom-dropdown-options');
+        list.classList.toggle('show');
+    }
+
+    // إغلاق القائمة عند النقر خارجها
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-dropdown-container')) {
+            document.getElementById('custom-dropdown-options').classList.remove('show');
+        }
+    });
 
     function calculateStudentSkills(d, p) {
         if (d.sections && typeof d.sections === 'object') {
@@ -682,10 +731,16 @@
 
     function setMod(m) { 
         selectedModel = m; 
-        const dropdown = document.getElementById('model-dropdown');
-        if (dropdown && dropdown.value !== m) {
-            dropdown.value = m;
+        
+        // تحديث النص المعروض في الزر المخصص
+        const textSpan = document.getElementById('dropdown-selected-text');
+        if (m === 'all') {
+            textSpan.innerText = "🌍 عرض الكل";
+        } else {
+            textSpan.innerText = `📂 نموذج: ${m}`;
         }
+        
+        document.getElementById('custom-dropdown-options').classList.remove('show');
 
         const actionArea = document.getElementById('action-area');
         const subTitle = document.getElementById('sub-title');
@@ -714,25 +769,23 @@
     }
 
     function updateModelDropdown(snapshot) {
-        const dropdown = document.getElementById('model-dropdown');
+        const optionsContainer = document.getElementById('custom-dropdown-options');
         const foundModels = new Set();
         snapshot.forEach(doc => foundModels.add(doc.data().model_id?.toString() || "الجملة الاسمية"));
         
-        let optionsHtml = `<option value="all" style="background-color: #ffffff; color: #0284c7; font-weight: bold;">🌍 عرض الكل</option>`;
+        let html = `<div class="custom-dropdown-item" style="background-color: #ffffff; color: #0284c7;" onclick="setMod('all')">🌍 عرض الكل</div>`;
         
         let sortedModels = Array.from(foundModels).sort();
         sortedModels.forEach((mId, index) => {
-            // سطر أبيض، وسطر بيج بخطوط حواف حمراء خفيفة (تنسيق تسلسلي)
-            let bgColor = (index % 2 === 0) ? '#ffffff' : '#fdf6e2'; 
-            let customStyle = (index % 2 === 0) 
-                ? `background-color: #ffffff; color: #1e293b; font-weight: bold;` 
-                : `background-color: #fdf6e2; color: #991b1b; font-weight: bold; border-bottom: 1px dashed #f87171; border-top: 1px dashed #f87171;`;
+            // سطر أبيض، وسطر بيج بحواف حمراء خفيفة تسلسلي
+            let style = (index % 2 === 0) 
+                ? `background-color: #ffffff; color: #1e293b;` 
+                : `background-color: #fdf6e2; color: #991b1b; border-top: 1px dashed #f87171; border-bottom: 1px dashed #f87171;`;
             
-            optionsHtml += `<option value="${mId}" style="${customStyle}">📂 نموذج: ${mId}</option>`;
+            html += `<div class="custom-dropdown-item" style="${style}" onclick="setMod('${mId}')">📂 نموذج: ${mId}</div>`;
         });
         
-        dropdown.innerHTML = optionsHtml;
-        dropdown.value = selectedModel;
+        optionsContainer.innerHTML = html;
     }
 
     async function deleteEntireModel(modelId) {
