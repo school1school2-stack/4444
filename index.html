@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب لوكيل الشؤون الطلابية 2026</title>
+    <title>منظومة تحويل الطلاب للوكيل 2026</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -636,9 +636,9 @@
     </div>
 </div>
 
-<!-- شاشة البحث الخاصة بوكيل الشؤون الطلابية -->
+<!-- شاشة البحث الخاصة بالوكيل -->
 <div class="interactive-toolbar no-print" id="viceSearchToolbar" style="display: none; background: #f0f9ff; border-color: #bae6fd;">
-    <h3 style="color: #1e3a8a;"><i class="fa-solid fa-user-gear"></i> بحث ومتابعة سجلات وكيل الشؤون الطلابية</h3>
+    <h3 style="color: #1e3a8a;"><i class="fa-solid fa-user-gear"></i> بحث ومتابعة سجلات الوكيل</h3>
     <div style="margin-bottom: 15px;">
         <input type="text" id="viceSearchInput" class="student-search" placeholder="🔍 اكتب اسم الطالب للبحث عن جميع تحويلاته من كافة المعلمين..." oninput="executeViceSearch()">
     </div>
@@ -649,7 +649,7 @@
 <div class="modal-overlay" id="searchArchiveModal">
     <div class="modal-content" style="max-width: 850px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 15px;">
-            <h3 style="color: var(--navy); margin: 0;"><i class="fa-solid fa-magnifying-glass"></i> البحث عن اسم طالب في سجلات وكيل الشؤون الطلابية والأرشيف</h3>
+            <h3 style="color: var(--navy); margin: 0;"><i class="fa-solid fa-magnifying-glass"></i> البحث عن اسم طالب في سجلات الوكيل والأرشيف</h3>
             <button class="btn btn-close" onclick="closeArchiveSearchModal()"><i class="fa-solid fa-xmark"></i> إغلاق النافذة</button>
         </div>
         <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">اكتب اسم الطالب لعرض بطاقته وتقاريره المحددة فقط هنا بداخل النافذة:</p>
@@ -685,7 +685,7 @@
                 <i class="fa-solid fa-user-tie"></i>
             </div>
             <div>
-                <h2 id="mainHeadingTitle">إشعار تحويل طالب لوكيل الشؤون الطلابية</h2>
+                <h2 id="mainHeadingTitle">إشعار تحويل طالب للوكيل</h2>
                 <small style="color: var(--text-muted); font-weight: 600;">ثانوية الأمير عبدالمجيد بن عبدالعزيز</small>
             </div>
         </div>
@@ -722,7 +722,7 @@
 
     <div class="signatures-footer">
         <div class="signature-block">
-            <div><strong>وكيل الشؤون الطلابية:</strong> <span class="viceNameDisplay">د / ماجد الخزيم</span></div>
+            <div><strong>الوكيل:</strong> <span class="viceNameDisplay">د / ماجد الخزيم</span></div>
             <div><strong>التوقيع:</strong> ....................................</div>
         </div>
         <div class="signature-block">
@@ -776,7 +776,7 @@
     let teacherEmail = localStorage.getItem("teacher_email") || "";
     let teacherSubject = localStorage.getItem("teacher_subject") || "";
     
-    // قائمة وكلاء الشؤون الطلابية
+    // قائمة الوكلاء
     const vicesList = [
         "د / ماجد الخزيم",
         "أ / يزيد الشثري"
@@ -852,7 +852,7 @@
             document.getElementById('controlSection').style.display = 'none';
             document.querySelector('.actions-dropdown-container').style.display = 'none';
             document.getElementById('viceSearchToolbar').style.display = 'block';
-            document.getElementById('mainHeadingTitle').textContent = `لوحة متابعة وكيل الشؤون الطلابية (${currentViceParam})`;
+            document.getElementById('mainHeadingTitle').textContent = `لوحة متابعة الوكيل (${currentViceParam})`;
             updateNamesUI();
             return;
         }
@@ -1381,7 +1381,7 @@
                 <div class="executive-grid">
                     <div><strong>اسم الطالب:</strong> ${studentName}</div>
                     <div><strong>إجمالي حالات التحويل:</strong> ${studentCases.length} حالة</div>
-                    <div><strong>وكيل الشؤون الطلابية:</strong> ${activeVice}</div>
+                    <div><strong>الوكيل:</strong> ${activeVice}</div>
                     <div><strong>تاريخ التقرير:</strong> ${new Date().toLocaleDateString('ar-SA')}</div>
                 </div>
                 <div class="executive-section-title">سجل حالات التحويل المرصودة من جميع المعلمين:</div>
@@ -1389,7 +1389,7 @@
                 
                 <div class="signatures-footer">
                     <div class="signature-block">
-                        <div><strong>وكيل الشؤون الطلابية:</strong> ${activeVice}</div>
+                        <div><strong>الوكيل:</strong> ${activeVice}</div>
                         <div><strong>التوقيع:</strong> ....................................</div>
                     </div>
                     <div class="signature-block">
